@@ -11,7 +11,7 @@ import { AdvancedKnowledgeGraph } from "./knowledge/advanced-knowledge-graph"
 import { CollaborationPanel } from "./collaboration/collaboration-panel"
 import { MobileNav } from "./layout/mobile-nav"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, Brain, Network, Users } from "lucide-react"
+import { ChevronLeft, Brain, Network, Users, GripVertical, ChevronRight } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useStore } from "@/lib/store/store"
 import { useDeviceDetect, useSwipeGesture } from "@/lib/utils/mobile-utils"
@@ -29,6 +29,7 @@ export function App() {
   const [showRightPanel, setShowRightPanel] = useState(false)
   const [rightPanelWidth, setRightPanelWidth] = useState(320) // 默认宽度
   const { isMobile } = useDeviceDetect()
+  const [isRightPanelCollapsed, setIsRightPanelCollapsed] = useState(false)
 
   // 在移动设备上，如果侧边栏打开，则隐藏右侧面板
   useEffect(() => {
@@ -122,19 +123,19 @@ export function App() {
                   key="right-panel"
                   initial={{
                     x: isMobile ? "100%" : 0,
-                    width: isMobile ? "100%" : rightPanelWidth,
+                    width: isMobile ? "100%" : (isRightPanelCollapsed ? 40 : rightPanelWidth),
                   }}
                   animate={{
                     x: 0,
-                    width: isMobile ? "100%" : rightPanelWidth,
+                    width: isMobile ? "100%" : (isRightPanelCollapsed ? 40 : rightPanelWidth),
                   }}
                   exit={{
                     x: isMobile ? "100%" : 0,
-                    width: isMobile ? "100%" : rightPanelWidth,
+                    width: isMobile ? "100%" : (isRightPanelCollapsed ? 40 : rightPanelWidth),
                   }}
                   transition={{ type: "spring", damping: 25, stiffness: 300 }}
                   className={`${isMobile ? "absolute inset-0 z-10 bg-gray-950" : ""} border-l border-gray-800 flex flex-col h-full overflow-hidden relative`}
-                  style={{ width: isMobile ? "100%" : `${rightPanelWidth}px` }}
+                  style={{ width: isMobile ? "100%" : (isRightPanelCollapsed ? "40px" : `${rightPanelWidth}px`) }}
                 >
                   {isMobile && (
                     <div className="p-2 border-b border-gray-800">
@@ -150,43 +151,61 @@ export function App() {
                     </div>
                   )}
 
-                  <div className="border-b border-gray-800 p-2">
-                    <div className="flex">
-                      <button
-                        className={`flex-1 py-2 px-4 text-sm font-medium flex flex-col items-center gap-1 touch-feedback ${
-                          activeRightPanel === "ai" ? "bg-gray-800 rounded-md" : ""
-                        }`}
-                        onClick={() => setActiveRightPanel("ai")}
-                      >
-                        <Brain className="h-4 w-4" />
-                        <span>AI助手</span>
-                      </button>
-                      <button
-                        className={`flex-1 py-2 px-4 text-sm font-medium flex flex-col items-center gap-1 touch-feedback ${
-                          activeRightPanel === "graph" ? "bg-gray-800 rounded-md" : ""
-                        }`}
-                        onClick={() => setActiveRightPanel("graph")}
-                      >
-                        <Network className="h-4 w-4" />
-                        <span>知识图谱</span>
-                      </button>
-                      <button
-                        className={`flex-1 py-2 px-4 text-sm font-medium flex flex-col items-center gap-1 touch-feedback ${
-                          activeRightPanel === "collab" ? "bg-gray-800 rounded-md" : ""
-                        }`}
-                        onClick={() => setActiveRightPanel("collab")}
-                      >
-                        <Users className="h-4 w-4" />
-                        <span>协作</span>
-                      </button>
-                    </div>
-                  </div>
-                  <div className="flex-1 overflow-auto">{renderRightPanel()}</div>
+                  {!isRightPanelCollapsed && (
+                    <>
+                      <div className="border-b border-gray-800 p-2">
+                        <div className="flex">
+                          <button
+                            className={`flex-1 py-2 px-4 text-sm font-medium flex flex-col items-center gap-1 touch-feedback ${
+                              activeRightPanel === "ai" ? "bg-gray-800 rounded-md" : ""
+                            }`}
+                            onClick={() => setActiveRightPanel("ai")}
+                          >
+                            <Brain className="h-4 w-4" />
+                            <span>AI助手</span>
+                          </button>
+                          <button
+                            className={`flex-1 py-2 px-4 text-sm font-medium flex flex-col items-center gap-1 touch-feedback ${
+                              activeRightPanel === "graph" ? "bg-gray-800 rounded-md" : ""
+                            }`}
+                            onClick={() => setActiveRightPanel("graph")}
+                          >
+                            <Network className="h-4 w-4" />
+                            <span>知识图谱</span>
+                          </button>
+                          <button
+                            className={`flex-1 py-2 px-4 text-sm font-medium flex flex-col items-center gap-1 touch-feedback ${
+                              activeRightPanel === "collab" ? "bg-gray-800 rounded-md" : ""
+                            }`}
+                            onClick={() => setActiveRightPanel("collab")}
+                          >
+                            <Users className="h-4 w-4" />
+                            <span>协作</span>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex-1 overflow-auto">{renderRightPanel()}</div>
+                    </>
+                  )}
+
+                  {/* 收起/展开按钮 */}
+                  {!isMobile && (
+                    <button
+                      onClick={() => setIsRightPanelCollapsed(!isRightPanelCollapsed)}
+                      className="absolute -left-3 top-1/2 -translate-y-1/2 bg-gray-800 rounded-full p-1.5 hover:bg-gray-700 transition-colors"
+                    >
+                      {isRightPanelCollapsed ? (
+                        <ChevronLeft className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )}
+                    </button>
+                  )}
                   
                   {/* 宽度调整手柄 */}
-                  {!isMobile && (
+                  {!isMobile && !isRightPanelCollapsed && (
                     <div 
-                      className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-purple-500/50 transition-colors"
+                      className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize group"
                       onMouseDown={(e) => {
                         e.preventDefault();
                         const startX = e.clientX;
@@ -206,7 +225,12 @@ export function App() {
                         document.addEventListener('mousemove', handleMouseMove);
                         document.addEventListener('mouseup', handleMouseUp);
                       }}
-                    />
+                    >
+                      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <GripVertical className="h-4 w-4 text-gray-400" />
+                      </div>
+                      <div className="absolute inset-0 bg-transparent group-hover:bg-purple-500/10 transition-colors" />
+                    </div>
                   )}
                 </motion.div>
               )}
