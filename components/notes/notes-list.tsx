@@ -37,7 +37,7 @@ export function NotesList({ notes }: NotesListProps) {
         setSwipedNoteId(null)
       }
     },
-    element: containerRef,
+    element: containerRef as unknown as React.RefObject<HTMLElement>,
   })
 
   // 处理笔记滑动

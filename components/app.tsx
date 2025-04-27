@@ -27,6 +27,7 @@ export function App() {
   const [showGlobalAI, setShowGlobalAI] = useState(false)
   const [activeRightPanel, setActiveRightPanel] = useState<RightPanelType>("ai")
   const [showRightPanel, setShowRightPanel] = useState(false)
+  const [rightPanelWidth, setRightPanelWidth] = useState(320) // 默认宽度
   const { isMobile } = useDeviceDetect()
 
   // 在移动设备上，如果侧边栏打开，则隐藏右侧面板
@@ -121,18 +122,19 @@ export function App() {
                   key="right-panel"
                   initial={{
                     x: isMobile ? "100%" : 0,
-                    width: isMobile ? "100%" : "auto",
+                    width: isMobile ? "100%" : rightPanelWidth,
                   }}
                   animate={{
                     x: 0,
-                    width: isMobile ? "100%" : "auto",
+                    width: isMobile ? "100%" : rightPanelWidth,
                   }}
                   exit={{
                     x: isMobile ? "100%" : 0,
-                    width: isMobile ? "100%" : "auto",
+                    width: isMobile ? "100%" : rightPanelWidth,
                   }}
                   transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                  className={`${isMobile ? "absolute inset-0 z-10 bg-gray-950" : "w-80"} border-l border-gray-800 flex flex-col h-full overflow-hidden`}
+                  className={`${isMobile ? "absolute inset-0 z-10 bg-gray-950" : ""} border-l border-gray-800 flex flex-col h-full overflow-hidden relative`}
+                  style={{ width: isMobile ? "100%" : `${rightPanelWidth}px` }}
                 >
                   {isMobile && (
                     <div className="p-2 border-b border-gray-800">
@@ -180,6 +182,32 @@ export function App() {
                     </div>
                   </div>
                   <div className="flex-1 overflow-auto">{renderRightPanel()}</div>
+                  
+                  {/* 宽度调整手柄 */}
+                  {!isMobile && (
+                    <div 
+                      className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-purple-500/50 transition-colors"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        const startX = e.clientX;
+                        const startWidth = rightPanelWidth;
+                        
+                        const handleMouseMove = (moveEvent: MouseEvent) => {
+                          const deltaX = startX - moveEvent.clientX;
+                          const newWidth = Math.max(280, Math.min(600, startWidth + deltaX));
+                          setRightPanelWidth(newWidth);
+                        };
+                        
+                        const handleMouseUp = () => {
+                          document.removeEventListener('mousemove', handleMouseMove);
+                          document.removeEventListener('mouseup', handleMouseUp);
+                        };
+                        
+                        document.addEventListener('mousemove', handleMouseMove);
+                        document.addEventListener('mouseup', handleMouseUp);
+                      }}
+                    />
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

@@ -106,7 +106,7 @@ export function useSwipeGesture({
 }: { 
   onSwipeLeft?: () => void, 
   onSwipeRight?: () => void,
-  element?: React.RefObject<HTMLElement> | null
+  element?: React.RefObject<Element> | null
 }) {
   useEffect(() => {
     if (typeof window === "undefined") return

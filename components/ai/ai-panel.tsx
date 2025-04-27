@@ -88,9 +88,9 @@ export function AIPanel({ noteId, isOpen = false }: AIPanelProps) {
               <p className="text-sm text-gray-400">分析笔记内容中...</p>
             </div>
           ) : (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ staggerChildren: 0.1 }}>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ staggerChildren: 0.1 }} className="w-full">
               <motion.div
-                className="p-3 bg-purple-900/20 rounded-lg"
+                className="p-3 bg-purple-900/20 rounded-lg w-full"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.3 }}
@@ -100,20 +100,20 @@ export function AIPanel({ noteId, isOpen = false }: AIPanelProps) {
                   {suggestions.map((suggestion, i) => (
                     <motion.li
                       key={i}
-                      className="flex items-start gap-2 text-sm"
+                      className="flex items-start gap-2 text-sm break-words"
                       initial={{ x: -10, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: i * 0.1 }}
                     >
                       <Zap className="h-4 w-4 text-purple-400 mt-0.5 shrink-0" />
-                      <span>{suggestion}</span>
+                      <span className="min-w-0">{suggestion}</span>
                     </motion.li>
                   ))}
                 </ul>
               </motion.div>
 
               <motion.div
-                className="p-3 bg-gray-800/50 rounded-lg mt-3"
+                className="p-3 bg-gray-800/50 rounded-lg mt-3 w-full"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
@@ -123,13 +123,13 @@ export function AIPanel({ noteId, isOpen = false }: AIPanelProps) {
                   {topics.map((topic, i) => (
                     <motion.div
                       key={i}
-                      className="flex justify-between items-center text-sm"
+                      className="flex justify-between items-center text-sm w-full"
                       initial={{ width: "0%" }}
                       animate={{ width: "100%" }}
                       transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
                     >
-                      <span>{topic.name}</span>
-                      <div className="w-24 h-2 bg-gray-700 rounded-full overflow-hidden">
+                      <span className="truncate mr-2">{topic.name}</span>
+                      <div className="w-24 h-2 bg-gray-700 rounded-full overflow-hidden shrink-0">
                         <motion.div
                           className="h-full"
                           style={{
@@ -146,7 +146,7 @@ export function AIPanel({ noteId, isOpen = false }: AIPanelProps) {
               </motion.div>
 
               <motion.div
-                className="p-3 bg-gray-800/50 rounded-lg mt-3"
+                className="p-3 bg-gray-800/50 rounded-lg mt-3 w-full"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.2 }}
@@ -156,13 +156,13 @@ export function AIPanel({ noteId, isOpen = false }: AIPanelProps) {
                   {resources.map((resource, i) => (
                     <motion.li
                       key={i}
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 break-words"
                       initial={{ x: -10, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: 0.3 + i * 0.1 }}
                     >
-                      <FileText className="h-4 w-4 text-blue-400" />
-                      <span className="text-blue-400 underline">{resource.title}</span>
+                      <FileText className="h-4 w-4 text-blue-400 shrink-0" />
+                      <span className="text-blue-400 underline truncate">{resource.title}</span>
                     </motion.li>
                   ))}
                 </ul>
